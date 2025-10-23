@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; text-align: center; }
+        .container { max-width: 800px; margin: 50px auto; padding: 30px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h1 { color: #38761d; margin-bottom: 30px; }
+        .result-box { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; background-color: #e6ffe6; }
+        .image-preview img { max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 15px; border: 3px solid #38761d; }
+        .prediction-info { font-size: 1.2em; line-height: 1.6; }
+        .prediction-info strong { color: #38761d; }
+        a { color: #555; text-decoration: none; margin-top: 20px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title }} 🎉</h1>
+
+        <div class="result-box">
+            <h2>Prediction Success!</h2>
+
+            <div class="image-preview">
+                <p>Image Uploaded:</p>
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Kuih Image">
+            </div>
+
+            <div class="prediction-info">
+                <p>The system recognizes this delicacy as:</p>
+                <h3><strong>{{ delicacy }}</strong></h3>
+                <p>Confidence Level: <strong>{{ confidence }}</strong></p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('index') }}">← Upload Another Image</a>
+    </div>
+</body>
+</html>
