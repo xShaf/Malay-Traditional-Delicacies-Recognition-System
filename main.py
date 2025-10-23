@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.utils import secure_filename  # Used to securely handle uploaded file names
+from werkzeug.utils import secure_filename
+import database as db
 
 # --- Configuration ---
 app = Flask(__name__)
@@ -83,6 +84,21 @@ def show_result():
                            confidence=confidence)
 
 
+@app.route('/add', methods=['GET', 'POST'])
+def add_kuih_route():
+    if request.method == 'POST':
+        name = request.form['name']
+        history = request.form['history']
+        file = request.files['image']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            db.add_kuih(name, file_path, history)
+            return redirect(url_for('index'))
+    return render_template('add_kuih.html', title="Add Kuih")
+
 if __name__ == '__main__':
-    # Running on 0.0.0.0 makes it accessible outside of localhost (useful for testing)
+    with app.app_context():
+        db.init_db()
     app.run(debug=True)
