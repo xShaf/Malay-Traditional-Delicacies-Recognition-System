@@ -36,6 +36,13 @@ def index():
     return render_template('index.html', title=page_title)
 
 
+@app.route('/directory')
+def directory():
+    """Renders the directory page with all kuih."""
+    kuih_list = db.get_all_kuih()
+    return render_template('directory.html', title="Kuih Directory", kuih_list=kuih_list)
+
+
 @app.route('/recognize', methods=['POST'])
 def recognize_file():
     """
