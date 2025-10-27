@@ -54,6 +54,17 @@ def migrate_db(db_name=DATABASE_NAME):
         conn.close()
 
 
+def get_all_kuih(db_name=DATABASE_NAME):
+    """Retrieves all kuih from the database."""
+    conn = get_db(db_name)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("SELECT * FROM kuih")
+    kuih_list = c.fetchall()
+    conn.close()
+    return kuih_list
+
+
 def add_kuih(name, image_file, history, recipe, db_name=DATABASE_NAME):
     """
     Saves the image file as PNG and records the file path in the database.

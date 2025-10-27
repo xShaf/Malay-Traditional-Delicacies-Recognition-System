@@ -1,59 +1,51 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.5.0/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-base-200">
-    <div class="container mx-auto p-4 max-w-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Add a New Kuih</h1>
-        <div class="card bg-base-100 shadow-xl p-8">
-            <form action="/add" method="post" enctype="multipart/form-data" class="space-y-4">
-                
-                <div class="form-control w-full">
-                    <label class="label" for="name">
-                        <span class="label-text">Kuih Name:</span>
-                    </label>
-                    <input type="text" id="name" name="name" required 
-                           placeholder="e.g., Kuih Lapis" 
-                           class="input input-bordered w-full" />
-                </div>
+{% extends "base.html" %}
 
-                <div class="form-control w-full">
-                    <label class="label" for="image">
-                        <span class="label-text">Kuih Image:</span>
-                    </label>
-                    <input type="file" id="image" name="image" accept="image/*" required 
-                           class="file-input file-input-bordered w-full file-input-primary" />
-                </div>
+{% block content %}
+<div class="container mx-auto p-4 max-w-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-base-content">Add a New Kuih</h1>
+    <div class="card bg-base-100 shadow-xl p-8">
+        <form action="/add" method="post" enctype="multipart/form-data" class="space-y-4">
 
-                <div class="form-control w-full">
-                    <label class="label" for="history">
-                        <span class="label-text">History:</span>
-                    </label>
-                    <textarea id="history" name="history" rows="4" cols="50" required 
-                              placeholder="Enter the history of the kuih here..."
-                              class="textarea textarea-bordered h-24"></textarea>
-                </div>
+            <div class="form-control w-full">
+                <label class="label" for="name">
+                    <span class="label-text">Kuih Name:</span>
+                </label>
+                <input type="text" id="name" name="name" required
+                       placeholder="e.g., Kuih Lapis"
+                       class="input input-bordered w-full" />
+            </div>
 
-                <div class="form-control w-full">
-                    <label class="label" for="recipe">
-                        <span class="label-text font-bold">Recipe:</span>
-                    </label>
-                    <textarea id="recipe" name="recipe" rows="6" cols="50" required
-                              placeholder="Enter step-by-step recipe here..."
-                              class="textarea textarea-bordered h-36"></textarea>
-                </div>
-                <div class="flex justify-end pt-4">
-                    <button type="submit" class="btn btn-primary">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="form-control w-full">
+                <label class="label" for="image">
+                    <span class="label-text">Kuih Image:</span>
+                </label>
+                <input type="file" id="image" name="image" accept="image/*" required
+                       class="file-input file-input-bordered w-full file-input-primary" />
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label" for="history">
+                    <span class="label-text">History:</span>
+                </label>
+                <textarea id="history" name="history" rows="4" cols="50" required
+                          placeholder="Enter the history of the kuih here..."
+                          class="textarea textarea-bordered h-24"></textarea>
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label" for="recipe">
+                    <span class="label-text font-bold">Recipe:</span>
+                </label>
+                <textarea id="recipe" name="recipe" rows="6" cols="50" required
+                          placeholder="Enter step-by-step recipe here..."
+                          class="textarea textarea-bordered h-36"></textarea>
+            </div>
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </div>
+        </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
