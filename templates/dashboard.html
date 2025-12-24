@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+    <div class="badge badge-lg {{ 'badge-success' if state.is_active else 'badge-error' }}">
+        System: {{ 'ONLINE' if state.is_active else 'OFFLINE' }}
+    </div>
+</div>
+
+<div class="tabs tabs-boxed mb-6 bg-base-200 p-2">
+    <a class="tab tab-lg tab-active font-bold" onclick="showTab(event, 'overview')">📊 System Overview</a>
+    <a class="tab tab-lg font-bold" onclick="showTab(event, 'delicacies')">🥗 Manage Database</a>
+</div>
+
+<div id="overview" class="tab-content block">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Controls</h2>
+                <form method="POST" class="flex flex-col gap-4 mt-2">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-bold">Select Active Model</span></label>
+                        <select name="model_select" class="select select-bordered w-full">
+                            {% for model_name in available_models %}
+                                <option value="{{ model_name }}" {% if state.current_model == model_name %}selected{% endif %}>{{ model_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" name="action" value="start_system" class="btn btn-success flex-1" {{ 'disabled' if state.is_active }}>Start</button>
+                        <button type="submit" name="action" value="stop_system" class="btn btn-error flex-1" {{ 'disabled' if not state.is_active }}>Stop</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Analytics</h2>
+                <div class="flex flex-row h-full gap-4">
+                    <div class="stats stats-vertical shadow flex-none">
+                        <div class="stat place-items-center">
+                            <div class="stat-title">Avg Accuracy</div>
+                            <div class="stat-value text-primary">{{ avg_accuracy }}%</div>
+                        </div>
+                        <div class="stat place-items-center">
+                            <div class="stat-title">Total Scans</div>
+                            <div class="stat-value text-secondary">{{ total_inferences }}</div>
+                        </div>
+                    </div>
+                    <div class="flex-grow flex justify-center items-center">
+                        <canvas id="modelChart" style="max-height: 120px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="card bg-gray-900 text-white shadow-xl">
+            <div class="card-body p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="card-title text-success font-mono text-sm">> Live Console</h2>
+                    <span class="loading loading-spinner loading-xs text-success"></span>
+                </div>
+                <div class="mockup-code bg-black text-gray-300 h-64 overflow-y-auto border border-gray-700" id="console-box">
+                    <pre class="px-4 py-2 font-mono text-xs whitespace-pre-wrap" id="log-content"><code>Connecting...</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl h-[330px] overflow-hidden">
+            <div class="card-body p-0">
+                <div class="p-4 bg-base-200 font-bold border-b border-base-300 sticky top-0 z-10">💬 Recent User Feedback</div>
+                <div class="overflow-y-auto h-full p-4 space-y-4">
+                    {% for fb in feedbacks %}
+                    <div class="chat chat-start">
+                        <div class="chat-header">User #{{ fb.user_id }} <time class="text-xs opacity-50">{{ fb.timestamp.strftime('%H:%M') }}</time></div>
+                        <div class="chat-bubble {{ 'chat-bubble-primary' if fb.rating >= 4 else 'chat-bubble-warning' }}">
+                            <div class="font-bold text-xs mb-1">{{ fb.rating }} / 5 ⭐</div> {{ fb.comment }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-gray-400 mt-10">No feedback yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mb-8 border border-base-200">
+    <div class="card-body p-0">
+        <div class="p-4 font-bold text-lg border-b border-base-300 bg-base-200 flex justify-between items-center">
+            <span>📜 Inference History Log</span>
+            <span class="text-xs font-normal text-gray-500">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Image File</th>
+                        <th>Model Used</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Latency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td class="text-xs font-mono">{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ log.user_id if log.user_id else 'Guest' }}</td>
+                        <td class="truncate max-w-[150px]" title="{{ log.filename }}">{{ log.filename }}</td>
+                        <td><span class="badge badge-sm badge-outline">{{ log.model_used }}</span></td>
+                        <td class="font-bold">{{ log.predicted_class }}</td>
+                        <td>
+                            <div class="radial-progress text-primary text-[10px]" style="--value:{{ log.confidence_score * 100 }}; --size:2rem;">{{ "%.0f"|format(log.confidence_score * 100) }}%</div>
+                        </td>
+                        <td class="font-mono text-xs">{{ "%.0f"|format(log.inference_time_ms) }}ms</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" class="text-center py-8 text-gray-400">No logs available yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 border-t border-base-300 flex justify-center">
+            <div class="join">
+                {% if pagination.has_prev %}
+                    <a href="{{ url_for('main.admin_dashboard', page=pagination.prev_num) }}" class="join-item btn btn-sm">«</a>
+                {% else %}
+                    <button class="join-item btn btn-sm btn-disabled">«</button>
+                {% endif %}
+
+                <button class="join-item btn btn-sm no-animation">Page {{ pagination.page }}</button>
+
+                {% if pagination.has_next %}
+                    <a href="{{ url_for('main.admin_dashboard', page=pagination.next_num) }}" class="join-item btn btn-sm">»</a>
+                {% else %}
+                    <button class="join-item btn btn-sm btn-disabled">»</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div id="delicacies" class="tab-content hidden">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="card-title">Delicacy Database</h2>
+                <button class="btn btn-primary btn-sm" onclick="document.getElementById('add_modal').showModal()">+ Add New</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead class="bg-base-200">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in delicacies %}
+                        <tr>
+                            <td>{{ d.id }}</td>
+                            <td class="font-bold">{{ d.name }}</td>
+                            <td class="truncate max-w-xs">{{ d.description }}</td>
+                            <td class="text-right space-x-2">
+                                <button class="btn btn-sm btn-info btn-square" onclick="openEditModal('{{d.id}}', '{{d.name}}', `{{d.description}}`, `{{d.history}}`, `{{d.ingredients}}`, `{{d.recipe}}`)">✏️</button>
+                                <form action="/admin/delicacy/delete/{{ d.id }}" method="POST" class="inline" onsubmit="return confirm('Delete {{ d.name }}?');">
+                                    <button class="btn btn-sm btn-error btn-square">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<dialog id="add_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-3xl">
+    <h3 class="font-bold text-lg mb-4">Add New Delicacy</h3>
+    <form action="/admin/delicacy/add" method="POST" enctype="multipart/form-data">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-control mb-2"><label class="label">Name</label><input type="text" name="name" class="input input-bordered" required></div>
+            <div class="form-control mb-2"><label class="label">Reference Image</label><input type="file" name="delicacy_image" class="file-input file-input-bordered"></div>
+        </div>
+        <div class="form-control mb-2"><label class="label">Description (Short)</label><textarea name="description" class="textarea textarea-bordered h-20" required></textarea></div>
+        <div class="form-control mb-2"><label class="label">History</label><textarea name="history" class="textarea textarea-bordered h-24" required></textarea></div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-control mb-2"><label class="label">Ingredients</label><textarea name="ingredients" class="textarea textarea-bordered h-32"></textarea></div>
+            <div class="form-control mb-4"><label class="label">Recipe Steps</label><textarea name="recipe" class="textarea textarea-bordered h-32" required></textarea></div>
+        </div>
+        <button class="btn btn-primary w-full">Save Delicacy</button>
+    </form>
+    <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button></form>
+  </div>
+</dialog>
+
+<dialog id="edit_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-3xl">
+    <h3 class="font-bold text-lg mb-4">Edit Delicacy</h3>
+    <form id="edit_form" method="POST" enctype="multipart/form-data">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-control mb-2"><label class="label">Name</label><input type="text" id="edit_name" name="name" class="input input-bordered" required></div>
+            <div class="form-control mb-2"><label class="label">Update Image (Optional)</label><input type="file" name="delicacy_image" class="file-input file-input-bordered"></div>
+        </div>
+        <div class="form-control mb-2"><label class="label">Description</label><textarea id="edit_desc" name="description" class="textarea textarea-bordered h-20" required></textarea></div>
+        <div class="form-control mb-2"><label class="label">History</label><textarea id="edit_hist" name="history" class="textarea textarea-bordered h-24" required></textarea></div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="form-control mb-2"><label class="label">Ingredients</label><textarea id="edit_ing" name="ingredients" class="textarea textarea-bordered h-32"></textarea></div>
+            <div class="form-control mb-4"><label class="label">Recipe</label><textarea id="edit_recipe" name="recipe" class="textarea textarea-bordered h-32" required></textarea></div>
+        </div>
+        <button class="btn btn-warning w-full">Update Delicacy</button>
+    </form>
+    <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button></form>
+  </div>
+</dialog>
+
+<script>
+    // Tab Logic
+    function showTab(evt, id) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
+        document.getElementById(id).classList.remove('hidden');
+        evt.currentTarget.classList.add('tab-active');
+    }
+
+    // Modal Logic
+    function openEditModal(id, n, d, h, i, r) {
+        document.getElementById('edit_form').action = '/admin/delicacy/edit/' + id;
+        document.getElementById('edit_name').value = n;
+        document.getElementById('edit_desc').value = d;
+        document.getElementById('edit_hist').value = h;
+        document.getElementById('edit_ing').value = i;
+        document.getElementById('edit_recipe').value = r;
+        document.getElementById('edit_modal').showModal();
+    }
+
+    // Chart Logic
+    const ctx = document.getElementById('modelChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ graph_labels | safe }},
+            datasets: [{
+                data: {{ graph_values | safe }},
+                backgroundColor: ['#36D399', '#3ABFF8', '#F87272', '#FBBD23', '#661AE6', '#D926A9', '#1FB2A6'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } }
+        }
+    });
+
+    // Console Logic
+    const logContent = document.getElementById('log-content');
+    const consoleBox = document.getElementById('console-box');
+    let autoScroll = true;
+
+    consoleBox.addEventListener('scroll', () => {
+        if (consoleBox.scrollTop + consoleBox.clientHeight < consoleBox.scrollHeight - 20) {
+            autoScroll = false;
+        } else {
+            autoScroll = true;
+        }
+    });
+
+    function fetchLogs() {
+        fetch('/admin/get_logs')
+            .then(response => response.text())
+            .then(data => {
+                logContent.innerText = data;
+                if (autoScroll) consoleBox.scrollTop = consoleBox.scrollHeight;
+            })
+            .catch(err => console.error("Log error:", err));
+    }
+    setInterval(fetchLogs, 2000);
+    fetchLogs();
+</script>
+{% endblock %}

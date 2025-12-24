@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="upload-section" class="w-full max-w-xl mx-auto transition-opacity duration-300">
+    <div class="card bg-base-100/90 backdrop-blur-md shadow-xl border-t-4 border-pandan w-full">
+        <div class="card-body p-6 md:p-8">
+            <h2 class="card-title text-2xl md:text-3xl mb-4 heritage-font text-gula-melaka flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass"></i> Identify Delicacy
+            </h2>
+
+            <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6" onsubmit="showLoading()">
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold text-gray-600 uppercase text-xs tracking-wider">Select Photo</span>
+                    </label>
+
+                    <div id="drop-zone" class="relative w-full h-48 md:h-64 rounded-xl border-2 border-dashed border-primary bg-pandan-light/20 hover:bg-pandan-light/40 transition-all duration-300 flex flex-col items-center justify-center text-center overflow-hidden group cursor-pointer">
+
+                        <input type="file" name="image" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" required onchange="previewFile(this)">
+
+                        <div id="placeholder" class="pointer-events-none transition-transform duration-300 group-hover:scale-105 p-4">
+                            <div class="text-4xl md:text-5xl text-primary/50 mb-3"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <p class="text-sm md:text-base font-semibold text-gray-500">Tap to upload image</p>
+                            <p class="text-xs text-gray-400 mt-1">JPG, PNG supported</p>
+                        </div>
+
+                        <div id="preview-container" class="hidden absolute inset-0 w-full h-full bg-base-100 flex-col items-center justify-center p-2">
+                            <img id="preview-img" src="" alt="Preview" class="h-full w-full object-contain rounded-lg shadow-sm">
+                            <div class="absolute bottom-2 left-2 right-2 bg-black/50 text-white text-xs py-1 px-2 rounded truncate text-center backdrop-blur-sm" id="filename-text"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="analyze-btn" class="btn btn-primary btn-lg w-full shadow-lg transition-transform active:scale-95 text-white">
+                    <span id="btn-text">Analyze Image</span>
+                    <span id="btn-spinner" class="loading loading-spinner hidden"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="skeleton-section" class="hidden w-full max-w-4xl mx-auto animate-pulse">
+    <div class="card bg-base-100 shadow-xl mb-8 h-96"></div>
+</div>
+
+<script>
+    // Include the JS logic from previous recognize.html here
+    function previewFile(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview-img').src = e.target.result;
+                document.getElementById('filename-text').textContent = file.name;
+                document.getElementById('placeholder').classList.add('hidden');
+                document.getElementById('preview-container').classList.remove('hidden');
+                document.getElementById('preview-container').classList.add('flex');
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+    function showLoading() {
+        document.getElementById('upload-section').style.display = 'none';
+        document.getElementById('skeleton-section').classList.remove('hidden');
+    }
+</script>
+{% endblock %}

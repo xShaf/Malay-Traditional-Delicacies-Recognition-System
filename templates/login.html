@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-center items-center min-h-[60vh] px-4">
+    <div class="card w-full max-w-sm bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+            <h2 class="card-title justify-center text-2xl mb-4"><i class="fa-solid fa-lock text-primary"></i> Login</h2>
+            <form method="POST" class="flex flex-col gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Username</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" name="username" placeholder="Username" class="input input-bordered pl-10 w-full" required />
+                    </div>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Password</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" name="password" placeholder="Password" class="input input-bordered pl-10 w-full" required />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-4 w-full text-white">Login</button>
+            </form>
+            <div class="divider text-xs text-gray-400">OR</div>
+            <a href="/register" class="btn btn-outline btn-sm w-full">Create Account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

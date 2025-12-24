@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Header -->
+<div class="flex justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-fade-in">
+    <div>
+        <h1 class="text-4xl font-bold heritage-font text-gula-melaka mb-2">Model Evaluation</h1>
+        <p class="text-gray-500">Comparative analysis of deep learning architectures on the Malay Traditional Delicacies dataset.</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-outline gap-2 text-songket hover:bg-songket hover:text-white border-songket">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<!-- CHARTS SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 animate-fade-in">
+
+    <!-- Accuracy Comparison -->
+    <div class="card bg-white shadow-xl border-t-4 border-pandan">
+        <div class="card-body">
+            <h2 class="card-title text-pandan mb-4"><i class="fa-solid fa-chart-column"></i> Accuracy Comparison</h2>
+            <div class="h-64">
+                <canvas id="accuracyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loss Comparison -->
+    <div class="card bg-white shadow-xl border-t-4 border-batik-red">
+        <div class="card-body">
+            <h2 class="card-title text-batik-red mb-4"><i class="fa-solid fa-chart-line"></i> Validation Loss</h2>
+            <div class="h-64">
+                <canvas id="lossChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DETAILED METRICS GRID -->
+<h2 class="text-3xl font-bold heritage-font text-gula-melaka mb-6 pl-2 border-l-4 border-songket">Detailed Performance Metrics</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-fade-in">
+    {% for model_name, data in metrics.items() %}
+    <div class="card bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+        <div class="card-body p-6">
+            <h3 class="card-title text-xl text-gula-melaka border-b pb-2 mb-4">{{ model_name }}</h3>
+
+            <div class="flex flex-col gap-3">
+                <!-- Accuracy -->
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-bold text-gray-500">Accuracy</span>
+                    <span class="badge {{ 'badge-success text-white' if data.accuracy > 90 else ('badge-warning' if data.accuracy > 85 else 'badge-error text-white') }} font-bold">
+                        {{ data.accuracy }}%
+                    </span>
+                </div>
+
+                <!-- Precision -->
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Precision</span>
+                    <span class="font-mono text-sm">{{ data.precision }}%</span>
+                </div>
+
+                <!-- Recall -->
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Recall</span>
+                    <span class="font-mono text-sm">{{ data.recall }}%</span>
+                </div>
+
+                <!-- F1 Score -->
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">F1-Score</span>
+                    <span class="font-mono text-sm">{{ data.f1_score }}%</span>
+                </div>
+
+                <!-- Training Time (Footer) -->
+                <div class="mt-4 pt-3 border-t border-dashed border-gray-200 text-xs text-center text-gray-400">
+                    <i class="fa-solid fa-clock"></i> Training Time: {{ data.training_time }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // --- ACCURACY CHART ---
+    const ctxAcc = document.getElementById('accuracyChart').getContext('2d');
+    new Chart(ctxAcc, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Accuracy (%)',
+                data: {{ chart_accuracies|safe }},
+                backgroundColor: ['#134e4a', '#d97706', '#ccfbf1', '#881337'], // Theme Colors
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, max: 100 } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // --- LOSS CHART ---
+    const ctxLoss = document.getElementById('lossChart').getContext('2d');
+    new Chart(ctxLoss, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Validation Loss',
+                data: {{ chart_losses|safe }},
+                borderColor: '#881337', // Batik Red
+                backgroundColor: 'rgba(136, 19, 55, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}

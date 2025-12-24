@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Header Section -->
+<div class="text-center mb-10 animate-fade-in">
+    <h1 class="text-4xl font-bold heritage-font text-gula-melaka mb-3">
+        <i class="fa-solid fa-book-open text-pandan mr-2"></i> Library of Heritage
+    </h1>
+    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+        Explore the complete collection of traditional Malay delicacies in our knowledge base.
+        Discover the ingredients, history, and recipes that make our culture unique.
+    </p>
+</div>
+
+<!-- Search/Filter -->
+<div class="flex justify-center mb-10 animate-fade-in">
+    <div class="join">
+        <div class="relative">
+            <input type="text" id="searchInput" onkeyup="filterLibrary()" placeholder="Search delicacies..." class="input input-bordered join-item w-full max-w-xs focus:border-pandan pl-10" />
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-gray-400"></i>
+        </div>
+        <button class="btn btn-primary join-item">Search</button>
+    </div>
+</div>
+
+<!-- Grid of Delicacies -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in" id="delicacyGrid">
+    {% for delicacy in delicacies %}
+    <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border-t-4 border-pandan group h-full delicacy-card">
+        <figure class="px-6 pt-6 relative overflow-hidden">
+
+            <!-- UPDATED: Check for image_filename -->
+            {% if delicacy.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + delicacy.image_filename) }}"
+                     alt="{{ delicacy.name }}"
+                     class="rounded-xl h-48 w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            {% else %}
+                <!-- Fallback Placeholder -->
+                <div class="w-full h-48 bg-pandan-light/50 rounded-xl flex items-center justify-center text-pandan/30 group-hover:bg-pandan/10 transition-colors">
+                    <i class="fa-solid fa-utensils text-5xl"></i>
+                </div>
+            {% endif %}
+
+            <div class="absolute top-4 right-4">
+                <span class="badge bg-songket text-white border-none p-3 shadow-md">
+                    #{{ loop.index }}
+                </span>
+            </div>
+        </figure>
+
+        <div class="card-body">
+            <h2 class="card-title heritage-font text-2xl text-gula-melaka mb-2 group-hover:text-pandan transition-colors">
+                {{ delicacy.name }}
+            </h2>
+
+            <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+                {{ delicacy.description }}
+            </p>
+
+            <div class="card-actions justify-end mt-auto">
+                <button class="btn btn-sm btn-outline text-pandan border-pandan hover:bg-pandan hover:text-white gap-2" onclick="document.getElementById('modal_{{ delicacy.id }}').showModal()">
+                    <i class="fa-solid fa-eye"></i> View Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILED MODAL FOR EACH DELICACY (Unchanged logic, just added image inside modal too) -->
+    <dialog id="modal_{{ delicacy.id }}" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box w-11/12 max-w-4xl bg-white border-t-8 border-songket p-0 overflow-hidden">
+
+            <!-- Modal Header -->
+            <div class="bg-amber-50 p-6 border-b border-amber-100 flex justify-between items-center">
+                <h3 class="font-bold heritage-font text-3xl text-gula-melaka flex items-center gap-3">
+                    <span class="text-2xl">🍛</span> {{ delicacy.name }}
+                </h3>
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost text-gray-500 hover:bg-red-50 hover:text-red-500">✕</button>
+                </form>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 md:p-8 max-h-[70vh] overflow-y-auto">
+
+                <!-- NEW: Show image inside modal if exists -->
+                {% if delicacy.image_filename %}
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg border-4 border-songket">
+                    <img src="{{ url_for('static', filename='uploads/' + delicacy.image_filename) }}" class="w-full h-64 object-cover">
+                </div>
+                {% endif %}
+
+                <p class="text-lg text-gray-700 italic mb-8 border-l-4 border-songket pl-4">
+                    "{{ delicacy.description }}"
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="card bg-base-100 border border-gray-100 shadow-sm">
+                            <div class="card-body p-5">
+                                <h4 class="font-bold text-pandan flex items-center gap-2 mb-2">
+                                    <i class="fa-solid fa-scroll"></i> History
+                                </h4>
+                                <p class="text-sm text-justify leading-relaxed text-gray-600">
+                                    {{ delicacy.history }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card bg-base-100 border border-gray-100 shadow-sm">
+                            <div class="card-body p-5">
+                                <h4 class="font-bold text-songket flex items-center gap-2 mb-2">
+                                    <i class="fa-solid fa-basket-shopping"></i> Ingredients
+                                </h4>
+                                <div class="bg-amber-50/50 p-3 rounded text-sm whitespace-pre-line text-gray-700">
+                                    {{ delicacy.ingredients }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card bg-base-100 border border-gray-100 shadow-sm h-full">
+                            <div class="card-body p-5">
+                                <h4 class="font-bold text-batik-red flex items-center gap-2 mb-2">
+                                    <i class="fa-solid fa-fire-burner"></i> Preparation
+                                </h4>
+                                <div class="prose prose-sm max-w-none text-gray-700 whitespace-pre-line leading-relaxed">
+                                    {{ delicacy.recipe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                <form method="dialog">
+                    <button class="btn btn-primary btn-sm px-6">Close</button>
+                </form>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+    {% endfor %}
+</div>
+
+<!-- Empty State -->
+<div id="noResults" class="hidden text-center py-20">
+    <div class="text-6xl text-gray-200 mb-4"><i class="fa-solid fa-plate-wheat"></i></div>
+    <h3 class="text-xl font-bold text-gray-400">No delicacies found matching your search.</h3>
+</div>
+
+<script>
+    function filterLibrary() {
+        var input, filter, grid, cards, h2, i, txtValue, found;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        grid = document.getElementById("delicacyGrid");
+        cards = grid.getElementsByClassName('delicacy-card');
+        found = false;
+
+        for (i = 0; i < cards.length; i++) {
+            h2 = cards[i].getElementsByTagName("h2")[0];
+            txtValue = h2.textContent || h2.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+                found = true;
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+        document.getElementById('noResults').style.display = found ? "none" : "block";
+    }
+</script>
+
+{% endblock %}

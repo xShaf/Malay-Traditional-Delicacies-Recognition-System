@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-center items-center h-full mt-10">
+    <div class="card w-full max-w-sm px-4 bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title justify-center text-2xl mb-4"><i class="fa-solid fa-user-plus"></i> Register</h2>
+            <form method="POST" class="flex flex-col gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Choose Username</span></label>
+                    <div class="relative">
+                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" name="username" placeholder="username" class="input input-bordered pl-10 w-full" required />
+                    </div>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Choose Password</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" name="password" placeholder="password" class="input input-bordered pl-10 w-full" required />
+                    </div>
+                </div>
+                <div class="form-control mt-4">
+                    <button type="submit" class="btn btn-secondary text-white">Sign Up</button>
+                </div>
+            </form>
+            <div class="text-center mt-2">
+                <a href="/login" class="link link-hover text-sm">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

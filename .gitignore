@@ -1,0 +1,10 @@
+__pycache__/
+*.db
+*.log
+
+.venv/
+.idea/
+system.log
+data/
+static/uploads/
+MyModels/*

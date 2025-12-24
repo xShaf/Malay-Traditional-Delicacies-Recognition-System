@@ -1,0 +1,58 @@
+{
+    "AlexNet": {
+        "accuracy": 77.9,
+        "precision": 80.7,
+        "recall": 77.9,
+        "f1_score": 77.87,
+        "loss": 0.6586,
+        "training_time": "N/A"
+    },
+    "ResNet50": {
+        "accuracy": 92.96,
+        "precision": 93.18,
+        "recall": 92.96,
+        "f1_score": 92.98,
+        "loss": 0.2071,
+        "training_time": "N/A"
+    },
+    "MobileNetV2": {
+        "accuracy": 90.75,
+        "precision": 91.35,
+        "recall": 90.75,
+        "f1_score": 90.77,
+        "loss": 0.2876,
+        "training_time": "N/A"
+    },
+    "EfficientNetB0": {
+        "accuracy": 94.61,
+        "precision": 94.8,
+        "recall": 94.61,
+        "f1_score": 94.63,
+        "loss": 0.1742,
+        "training_time": "N/A"
+    },
+    "ResNet50_FineTuned": {
+        "accuracy": 97.24,
+        "precision": 97.3,
+        "recall": 97.24,
+        "f1_score": 97.25,
+        "loss": 0.1027,
+        "training_time": "N/A"
+    },
+    "MobileNetV2_FineTuned": {
+        "accuracy": 93.65,
+        "precision": 93.86,
+        "recall": 93.65,
+        "f1_score": 93.69,
+        "loss": 0.1993,
+        "training_time": "N/A"
+    },
+    "EfficientNetB0_FineTuned": {
+        "accuracy": 93.37,
+        "precision": 93.49,
+        "recall": 93.37,
+        "f1_score": 93.39,
+        "loss": 0.1948,
+        "training_time": "N/A"
+    }
+}
