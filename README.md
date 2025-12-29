@@ -60,6 +60,19 @@ A custom script automatically partitions the dataset into Train, Validation, and
     *   **10% Testing**: Reserved for final performance evaluation.
 *   **Process**: The script randomly shuffles files in the source `train` folder and *moves* the respective percentages to newly created `validation` and `test` directories this ensures no data leakage between sets.
 
+## ⚠️ IMPORTANT: Prerequisite Setup
+**Before running the web application, you must train the models.**
+
+1.  **Open the Jupyter Notebook**:
+    *   Upload `Malay_Traditional_Delicacies_Recognition_System.ipynb` to **Google Colab**.
+2.  **Mount Drive & Train**:
+    *   Follow the instructions in the notebook to mount your Google Drive and execute the training cells.
+    *   The notebook handles data splitting, training (AlexNet, ResNet50, etc.), and evaluation.
+3.  **Save Trained Models**:
+    *   After training, download the best-performing models (e.g., `ResNet50_FT.h5`) from your Drive.
+    *   Place them in the local `MyModels/` directory of this project.
+    *   *Note: The system requires these `.h5` files to perform predictions.*
+
 ## 🛠️ Technology Stack
 
 *   **Backend**: Flask (Python)
