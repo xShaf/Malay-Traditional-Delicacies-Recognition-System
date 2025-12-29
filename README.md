@@ -16,6 +16,15 @@ A state-of-the-art AI-powered web application designed to preserve and promote M
 *   **📈 Performance Evaluation**: Built-in comprehensive metrics and graphs (Confusion Matrix, Loss/Accuracy Curves) for all trained models.
 *   **📱 Responsive & Professional UI**: Designed with a "Corporate Heritage" theme using **TailwindCSS** and **DaisyUI**, fully responsive for mobile and desktop.
 
+## 📸 Screenshots
+
+|   |   |
+|:---:|:---:|
+| <img src=".github/screenshots/Screenshot 2025-12-30 031229.png" width="400"> | <img src=".github/screenshots/Screenshot 2025-12-30 031233.png" width="400"> |
+| <img src=".github/screenshots/Screenshot 2025-12-30 031319.png" width="400"> | <img src=".github/screenshots/Screenshot 2025-12-30 031327.png" width="400"> |
+| <img src=".github/screenshots/Screenshot 2025-12-30 031341.png" width="400"> | <img src=".github/screenshots/Screenshot 2025-12-30 031411.png" width="400"> |
+| <img src=".github/screenshots/Screenshot 2025-12-30 031457.png" width="400"> | <img src=".github/screenshots/Screenshot 2025-12-30 031500.png" width="400"> |
+
 ## 🧠 Deep Learning Models
 
 The core of the system consists of Convolutional Neural Networks (CNNs) trained on a custom dataset of **~7,000 images**. We experimented with training from scratch (AlexNet) and Transfer Learning (ResNet50, MobileNetV2, EfficientNetB0).
