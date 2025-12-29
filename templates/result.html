@@ -9,10 +9,11 @@
 
 <div id="result-skeleton" class="animate-pulse">
     <!-- Skeleton code same as recognize.html, omitting for brevity in response but functionally included -->
-     <div class="card bg-base-100 shadow-xl mb-8 border-l-8 border-base-300">
+    <div class="card bg-base-100 shadow-xl mb-8 border-l-8 border-base-300">
         <div class="card-body lg:flex-row gap-8 items-start p-8">
             <div class="w-full lg:w-80 flex-shrink-0">
-                <div class="w-full h-72 bg-base-300 rounded-xl flex items-center justify-center"><i class="fa-regular fa-image text-4xl text-base-content/20"></i></div>
+                <div class="w-full h-72 bg-base-300 rounded-xl flex items-center justify-center"><i
+                        class="fa-regular fa-image text-4xl text-base-content/20"></i></div>
             </div>
             <div class="flex-1 flex flex-col justify-center w-full py-2 gap-6">
                 <div class="h-8 bg-base-300 rounded w-1/4"></div>
@@ -26,31 +27,32 @@
 <div id="result-content" class="hidden">
 
     <!-- HEADLINE GROUP -->
-    <div class="card bg-base-100 shadow-xl mb-8 border-l-8 border-primary overflow-hidden">
+    <div class="card bg-base-100 shadow-xl mb-8 border border-base-300 overflow-hidden">
         <div class="card-body lg:flex-row gap-8 items-start p-8">
 
             <!-- Image Area -->
             <div class="w-full lg:w-80 flex-shrink-0">
                 <figure>
-                    <img src="{{ url_for('static', filename='uploads/' + result.image) }}"
-                         alt="{{ result.class }}"
-                         onload="revealContent()"
-                         class="w-full h-72 object-cover rounded-xl shadow-lg border-4 border-base-200 hover:scale-105 transition-transform duration-300">
+                    <img src="{{ url_for('static', filename='uploads/' + result.image) }}" alt="{{ result.class }}"
+                        onload="revealContent()"
+                        class="w-full h-72 object-cover rounded-xl shadow-lg border-4 border-base-200 hover:scale-105 transition-transform duration-300">
                 </figure>
             </div>
 
             <!-- Text Area -->
             <div class="flex-1 flex flex-col justify-center h-full py-2">
                 <div class="flex items-center gap-2 mb-4">
-                    <div class="badge badge-success badge-lg gap-2 text-white font-bold shadow-sm">
+                    <div
+                        class="badge badge-success badge-lg gap-2 text-white font-bold shadow-sm uppercase tracking-wider text-xs p-3">
                         <i class="fa-solid fa-circle-check"></i>
-                        Match: {{ result.confidence }}
+                        Confidence: {{ result.confidence }}
                     </div>
                 </div>
-                <h1 class="text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">{{ result.class }}</h1>
-                <blockquote class="text-xl text-gray-600 italic border-l-4 border-primary pl-6 py-2 bg-base-200 rounded-r-lg">
-                    <i class="fa-solid fa-quote-left text-primary/40 mr-2"></i> {{ info.description }}
-                </blockquote>
+                <h1 class="text-5xl lg:text-6xl font-bold heritage-font text-gula-melaka mb-6 tracking-tight">{{
+                    result.class }}</h1>
+                <div class="text-xl text-gray-600 italic border-l-4 border-songket pl-6 py-2 bg-base-200 rounded-r-lg">
+                    <i class="fa-solid fa-quote-left text-songket/40 mr-2"></i> {{ info.description }}
+                </div>
             </div>
         </div>
     </div>
@@ -89,13 +91,16 @@
                             <div class="rating rating-md">
                                 <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="1" />
                                 <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="2" />
-                                <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="3" checked />
+                                <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="3"
+                                    checked />
                                 <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="4" />
                                 <input type="radio" name="rating" class="mask mask-star-2 bg-orange-400" value="5" />
                             </div>
                         </div>
-                        <textarea name="comment" class="textarea textarea-bordered w-full h-20 text-sm" placeholder="Comments..."></textarea>
-                        <button class="btn btn-secondary btn-sm btn-block mt-4"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                        <textarea name="comment" class="textarea textarea-bordered w-full h-20 text-sm"
+                            placeholder="Comments..."></textarea>
+                        <button class="btn btn-secondary btn-sm btn-block mt-4"><i class="fa-solid fa-paper-plane"></i>
+                            Submit</button>
                     </form>
                 </div>
             </div>
@@ -112,7 +117,8 @@
                         <i class="fa-solid fa-scroll"></i> History & Culture
                     </h2>
                     <div class="divider my-0"></div>
-                    <p class="leading-relaxed text-gray-700 whitespace-pre-wrap text-justify mt-2 text-lg">{{ info.history }}</p>
+                    <p class="leading-relaxed text-gray-700 whitespace-pre-wrap text-justify mt-2 text-lg">{{
+                        info.history }}</p>
                 </div>
             </div>
             {% endif %}

@@ -212,8 +212,15 @@ def admin_evaluation():
     models = list(current_metrics.keys())
     accuracies = [m.get('accuracy', 0) for m in current_metrics.values()]
     losses = [m.get('loss', 0) for m in current_metrics.values()]
-    return render_template('evaluation.html', metrics=current_metrics, chart_labels=models, chart_accuracies=accuracies,
-                           chart_losses=losses)
+    return render_template('evaluation.html', metrics=current_metrics, chart_labels=models, chart_accuracies=accuracies, chart_losses=losses)
+
+
+@main.route('/admin/graph/<path:filename>')
+def get_graph(filename):
+    if not session.get('is_admin'): return "Access Denied", 403
+    directory = os.path.join(current_app.root_path, 'MyModels', 'graphs')
+    from flask import send_from_directory
+    return send_from_directory(directory, filename)
 
 
 # --- RECOGNITION ---
